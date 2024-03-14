@@ -1,0 +1,38 @@
+version: '3.9'
+name: lab2_compose
+  
+services:    
+    mongo-db:
+        container_name: mongo-db_container
+        image: mongo
+        restart: always
+        volumes:
+            - dbdata:/data/db
+        ports:
+            - 27017:27017
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: example
+        networks:
+          - db-network
+          
+    mongo-db-explorer:
+        container_name: mongo-db-explorer-container
+        image: mongo-express
+        restart: always
+        depends_on: 
+          - mongo-db
+        ports:
+            - 8081:8081
+        environment:
+            ME_CONFIG_BASICAUTH_USERNAME: admin
+            ME_CONFIG_BASICAUTH_PASSWORD: admin
+            ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo-db:27017/ 
+        networks:
+          - db-network
+    
+volumes:
+    dbdata:
+      
+networks:
+    db-network:
